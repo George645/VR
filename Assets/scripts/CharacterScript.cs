@@ -8,6 +8,8 @@ public class CharacterScript : MonoBehaviour{
     CharacterScript tempLeftThing;
     LayerMask generalNumberLayer;
 
+
+
     #region Serialized
     [Header("Not entirely necessary to fill in, or at least, shouldn't be")]
     [SerializeField]
@@ -15,6 +17,12 @@ public class CharacterScript : MonoBehaviour{
     [SerializeField]
     public string character;
     #endregion
+
+    #region get things
+    public CharacterScript RightThing { get { return rightThing; } }
+    public CharacterScript LeftThing { get { return leftThing; } }
+    #endregion
+
     private void Start() {
         generalNumberLayer = 6;
         try {
