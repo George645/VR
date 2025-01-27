@@ -550,8 +550,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1813330074233781056}
   - component: {fileID: 8206518215418453960}
-  - component: {fileID: -826065613203091764}
-  - component: {fileID: -4214929874210537309}
   - component: {fileID: 1503496255530974504}
   m_Layer: 6
   m_Name: 9
@@ -592,41 +590,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91a267758ffa3c147a4ea38613275c42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rightThing: {fileID: 0}
-  leftThing: {fileID: 0}
   isNumber: 1
   character: 9
---- !u!114 &-826065613203091764
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8725912201382270507}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e741851cba3ad425c91ecf922cc6b379, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _json: '{"declarations":{"Kind":"Object","collection":{"$content":[],"$version":"A"},"$version":"A"}}'
-    _objectReferences: []
---- !u!114 &-4214929874210537309
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8725912201382270507}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d2fe5546f775c47d2820aa5e8a715f53, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _data:
-    _json: '{"nest":{"source":"Macro","macro":0,"embed":null}}'
-    _objectReferences:
-    - {fileID: 11400000, guid: bf2081a849c440c4696d9bced2b67f19, type: 2}
 --- !u!65 &1503496255530974504
 BoxCollider:
   m_ObjectHideFlags: 0
