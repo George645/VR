@@ -178,7 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isNumber: 1
-  character: 
+  character: 1
 --- !u!1 &7087474037468008433
 GameObject:
   m_ObjectHideFlags: 0
