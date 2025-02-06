@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Anchor
   layers:
   - Default
   - TransparentFX
@@ -11,8 +12,6 @@ TagManager:
   - 
   - Water
   - UI
-  - general number layer
-  - number section layer
   - 
   - 
   - 
@@ -36,7 +35,9 @@ TagManager:
   - 
   - 
   - 
-  - uniquelayer
+  - 
+  - 
+  - floor
   m_SortingLayers:
   - name: Default
     uniqueID: 0
