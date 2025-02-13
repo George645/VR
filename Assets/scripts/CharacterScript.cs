@@ -1,4 +1,6 @@
 using Unity.VisualScripting;
+using UnityEditor;
+using UnityEditor.Rendering;
 using UnityEngine;
 
 public class CharacterScript : MonoBehaviour{
@@ -7,6 +9,7 @@ public class CharacterScript : MonoBehaviour{
     CharacterScript leftThing;
     CharacterScript tempLeftThing;
     LayerMask generalNumberLayer;
+    GameObject? followingDuplicate = null;
 
 
 
@@ -26,11 +29,20 @@ public class CharacterScript : MonoBehaviour{
     private void Start() {
         generalNumberLayer = 6;
         try {
-            character = System.Convert.ToString(System.Convert.ToInt16(this.name.Remove(1)));
-            isNumber = true;
+            if (name.Length > 1) {
+                character = System.Convert.ToString(System.Convert.ToInt16(name.Remove(1)));
+                isNumber = true;
+            }
+            else {
+                character = System.Convert.ToString(System.Convert.ToInt16(name));
+            }
         }
         catch {
-            character = this.name.Remove(1);
+            character = name.Remove(1);
+            isNumber = false;
+        }
+        finally {
+            character = name;
             isNumber = false;
         }
     }
@@ -39,12 +51,43 @@ public class CharacterScript : MonoBehaviour{
             CheckLeft();
             CheckRight();
         }
+        if (followingDuplicate != null) {
+            UpdateFolloweePosition();
+        }
     }
     private void LateUpdate() {
         if (!Input.GetMouseButton(0)) {
             RealignCharacters();
         }
     }
+
+    #region move followee to this position
+
+    private void UpdateFolloweePosition() {
+        followingDuplicate.transform.position = transform.position;
+        followingDuplicate.transform.rotation = transform.rotation;
+    }
+
+    #endregion
+
+    #region selected
+
+    public void Selected() {
+        //work on this
+        followingDuplicate = (GameObject)Instantiate(PrefabUtility.GetPrefabParent(this), new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0));
+        followingDuplicate.transform.localScale = new Vector3(0.11f, 0.11f, 0.11f);
+    }
+
+    #endregion
+
+    #region deseleft
+
+    public void DeSelect() {
+        Destroy(followingDuplicate);
+        followingDuplicate = null;
+    }
+
+    #endregion
 
     #region Destroy those on the right
     public void DestroyThoseOnTheRight() {

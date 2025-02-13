@@ -30,14 +30,14 @@ Material:
     m_Ints: []
     m_Floats:
     - _GradientSharpness: 0.233
-    - _GridSize: 142.5
+    - _GridSize: 76.89
     - _HighlightIntensity: 0.515
-    - _LineThickness: 1.5
+    - _LineThickness: 1.02
     - _WallFade: 0.231
     m_Colors:
-    - _BackgroundColor: {r: 0.3333333, g: 0.3085754, b: 0.23584901, a: 1}
+    - _BackgroundColor: {r: 0.2784314, g: 0.2784314, b: 0.2784314, a: 1}
     - _BottomColor: {r: 0.83281416, g: 0.865142, b: 0.8962264, a: 1}
-    - _GridColor: {r: 0.2578616, g: 0.23286726, b: 0.15163559, a: 0.7254902}
+    - _GridColor: {r: 0.39607847, g: 0.39607847, b: 0.39607847, a: 0.7254902}
     - _HighlightColor: {r: 0.5943396, g: 0.2719384, b: 0.2719384, a: 1}
     - _TopColor: {r: 0.2, g: 0.4, b: 0.6, a: 1}
     - _WallColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
