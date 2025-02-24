@@ -1,6 +1,5 @@
+using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Rendering;
 using UnityEngine;
 
 public class CharacterScript : MonoBehaviour{
@@ -9,16 +8,33 @@ public class CharacterScript : MonoBehaviour{
     CharacterScript leftThing;
     CharacterScript tempLeftThing;
     LayerMask generalNumberLayer;
+    [SerializeField]
     GameObject? followingDuplicate = null;
 
+    #region StaticNumberVariables
+    public static List<GameObject> allTheNumberPrefabs;
+    #endregion
 
+    [SerializeField]
+    private bool beenSelected = false;
+    [SerializeField]
+    private GameObject parent = null;
 
     #region Serialized
-    [Header("Not entirely necessary to fill in, or at least, shouldn't be")]
+    [SerializeField]
+    private GameObject thisPrefab;
+
+    [Tooltip("this only needs to be made once, but the more times, the better")]
+    [SerializeField]
+    public List<GameObject> allTheNumberPrefabsLocal;
+
+    [Tooltip("Not entirely necessary to fill in, or at least, shouldn't be")]
     [SerializeField]
     public bool isNumber = true;
+    [Tooltip("Not entirely necessary to fill in, or at least, shouldn't be")]
     [SerializeField]
     public string character;
+
     #endregion
 
     #region get things
@@ -44,6 +60,19 @@ public class CharacterScript : MonoBehaviour{
         finally {
             character = name;
             isNumber = false;
+        }
+        try {
+            Debug.Log(allTheNumberPrefabsLocal[0]); //THIS IS IMPORTANT -- IF IT IS REMOVED, THERE IS NO CHECK FOR IF THE LIST HAS ANYTHING IN
+            allTheNumberPrefabs = allTheNumberPrefabsLocal;
+        }
+        catch {
+
+        }
+        foreach (GameObject number in CharacterScript.allTheNumberPrefabs) {
+            if (number.name[0] == name[0]) {
+                thisPrefab = number;
+                break;
+            }
         }
     }
     private void Update() {
@@ -74,8 +103,21 @@ public class CharacterScript : MonoBehaviour{
 
     public void Selected() {
         //work on this
-        followingDuplicate = (GameObject)Instantiate(PrefabUtility.GetPrefabParent(this), new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0));
-        followingDuplicate.transform.localScale = new Vector3(0.11f, 0.11f, 0.11f);
+        if (thisPrefab == null) { 
+            foreach (GameObject number in allTheNumberPrefabs) {
+                if (number.name[0] == name[0]) {
+                    thisPrefab = number;
+                    break;
+                }
+            }
+        }
+        followingDuplicate = Instantiate(thisPrefab, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0));
+        followingDuplicate.GetComponent<CharacterScript>().parent = gameObject;
+        followingDuplicate.transform.localScale = new Vector3(1.05f, 1.05f, 1.05f);
+        if (parent != null) {
+            parent.GetComponent<CharacterScript>().followingDuplicate = null;
+            transform.localScale = new Vector3(1, 1, 1);
+        }
     }
 
     #endregion
@@ -83,7 +125,12 @@ public class CharacterScript : MonoBehaviour{
     #region deseleft
 
     public void DeSelect() {
-        Destroy(followingDuplicate);
+        if (!followingDuplicate.GetComponent<CharacterScript>().beenSelected) {
+            Destroy(followingDuplicate);
+        }
+        if (parent != null) {
+            parent = null;
+        }
         followingDuplicate = null;
     }
 
@@ -115,7 +162,7 @@ public class CharacterScript : MonoBehaviour{
     #region Scanning sides
     private CharacterScript CheckLeft() {
         tempLeftThing = null;
-        GetComponent<BoxCollider>().enabled = false;
+        //GetComponent<BoxCollider>().enabled = false;
         for (float i = -0.5f; i <= 0.25; i += 0.3f) {
             for (float j = -0.5f; i <= 0.25; i += 0.3f) {
                 Ray checkingLeft = new Ray(transform.position, new Vector3(j, i, -1)); //not sure if it is meant to be -1 or 1
