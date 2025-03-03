@@ -1,23 +1,21 @@
+using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterScript : MonoBehaviour{
-    CharacterScript rightThing;
-    CharacterScript tempRightThing;
-    CharacterScript leftThing;
-    CharacterScript tempLeftThing;
-    LayerMask generalNumberLayer;
-    [SerializeField]
     GameObject? followingDuplicate = null;
+    GameObject? currentEquals = null;
 
-    #region StaticNumberVariables
+    #region Public variables
+    public CharacterScript rightThing;
+    public CharacterScript leftThing;
+    #endregion
+
+    #region Static number variables
     public static List<GameObject> allTheNumberPrefabs;
     #endregion
 
-    [SerializeField]
     private bool beenSelected = false;
-    [SerializeField]
     private GameObject parent = null;
 
     #region Serialized
@@ -43,7 +41,6 @@ public class CharacterScript : MonoBehaviour{
     #endregion
 
     private void Start() {
-        generalNumberLayer = 6;
         try {
             if (name.Length > 1) {
                 character = System.Convert.ToString(System.Convert.ToInt16(name.Remove(1)));
@@ -68,20 +65,13 @@ public class CharacterScript : MonoBehaviour{
         catch {
 
         }
-        foreach (GameObject number in CharacterScript.allTheNumberPrefabs) {
-            if (number.name[0] == name[0]) {
-                thisPrefab = number;
-                break;
-            }
-        }
     }
     private void Update() {
-        if (Input.GetMouseButtonUp(0)) {
-            CheckLeft();
-            CheckRight();
-        }
         if (followingDuplicate != null) {
             UpdateFolloweePosition();
+        }
+        if (parent != null && isNumber) {
+            CheckEqualsAvailiability();
         }
     }
     private void LateUpdate() {
@@ -131,9 +121,33 @@ public class CharacterScript : MonoBehaviour{
         if (parent != null) {
             parent = null;
         }
+        if (currentEquals != null) {
+            Destroy(currentEquals);
+        }
         followingDuplicate = null;
     }
 
+    #endregion
+
+    #region Creating equals between numbers
+    private void CheckEqualsAvailiability() {
+        if (Math.Abs(parent.transform.position.z - transform.position.z) < 20 && Math.Abs(parent.transform.position.x - transform.position.x) < 5 && Math.Abs(parent.transform.position.y - transform.position.y) < 10) {
+            if (currentEquals == null) {
+                foreach (GameObject number in allTheNumberPrefabs) {
+                    if (number.name[0] == '=') {
+                        currentEquals = Instantiate(number, (transform.position + parent.transform.position) / 2, Quaternion.Lerp(transform.rotation, parent.transform.rotation, 0.5f));
+                    }
+                }
+            }
+            else {
+                currentEquals.transform.position = (transform.position + parent.transform.position) / 2;
+            }
+        }
+        else if (currentEquals != null) {
+            Destroy(currentEquals);
+            currentEquals = null;
+        }
+    }
     #endregion
 
     #region Destroy those on the right
@@ -145,65 +159,18 @@ public class CharacterScript : MonoBehaviour{
     }
     #endregion
 
-    #region Realign sides
+    #region Realign the objects on the sides
     private void RealignCharacters() {
         if (rightThing != null & leftThing != null) {
             transform.position = (rightThing.transform.position + leftThing.transform.position) / 2;
         }
         else if (rightThing != null) {
-            transform.position = new Vector3(rightThing.transform.position.x, rightThing.transform.position.y, rightThing.transform.position.z + 5);
+            transform.position = rightThing.transform.position + rightThing.gameObject.transform.right.normalized * 5;
         }
         else if (leftThing != null) {
-            transform.position = new Vector3(rightThing.transform.position.x, rightThing.transform.position.y, rightThing.transform.position.z - 5);
+            transform.position = leftThing.transform.position + leftThing.gameObject.transform.right.normalized * -5;
         }
     }
     #endregion
 
-    #region Scanning sides
-    private CharacterScript CheckLeft() {
-        tempLeftThing = null;
-        //GetComponent<BoxCollider>().enabled = false;
-        for (float i = -0.5f; i <= 0.25; i += 0.3f) {
-            for (float j = -0.5f; i <= 0.25; i += 0.3f) {
-                Ray checkingLeft = new Ray(transform.position, new Vector3(j, i, -1)); //not sure if it is meant to be -1 or 1
-                Physics.Raycast(checkingLeft, out RaycastHit hitInfo, 5, generalNumberLayer);
-                if (hitInfo.collider != null) {
-                    if (leftThing = hitInfo.collider.gameObject.GetComponent<CharacterScript>()) {
-                        return leftThing;
-                    }
-                    else {
-                        if (tempLeftThing == null) {
-                            tempLeftThing = hitInfo.collider.gameObject.GetComponent<CharacterScript>();
-                        }
-                    }
-                }
-            }
-        }
-        GetComponent<BoxCollider>().enabled = true;
-        return tempLeftThing;
-    }
-    private CharacterScript CheckRight() {
-        tempRightThing = null;
-        GetComponent<BoxCollider>().enabled = false;
-        for (float i = -0.5f; i <= 0.25; i += 0.3f) {
-            for (float j = -0.5f; i <= 0.25; i += 0.3f) {
-                Ray checkingLeft = new Ray(transform.position, new Vector3(j, i, 1)); //not sure if it is meant to be -1 or 1
-                Physics.Raycast(checkingLeft, out RaycastHit hitInfo, 5, generalNumberLayer);
-                if (hitInfo.collider != null) {
-                    if (rightThing = hitInfo.collider.gameObject.GetComponent<CharacterScript>()) {
-                        return rightThing;
-                    }
-                    else {
-                        if (tempRightThing == null) {
-                            tempRightThing = hitInfo.collider.gameObject.GetComponent<CharacterScript>();
-                        }
-                    }
-                }
-            }
-        }
-        GetComponent<BoxCollider>().enabled = true;
-        return tempRightThing;
-
-    }
-    #endregion
 }

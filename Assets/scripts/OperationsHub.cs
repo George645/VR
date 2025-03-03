@@ -1,10 +1,8 @@
 using System;
 using UnityEngine;
-using Unity.VisualScripting;
 using UnityEngine.Analytics;
 using UnityEditor.ShaderGraph.Legacy;
 
-[IncludeInSettings(true)]
 public class OperationsHub : MonoBehaviour {
     public static GameObject number0;
     public static GameObject number1;
