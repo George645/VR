@@ -35,10 +35,10 @@ public class OperationsHub : MonoBehaviour {
        return firstInt + secondInt;
    }*/
     public static int GetEntireNumberFromLeftNoSymbols(CharacterScript input) {
-        if (input.LeftThing != null){
+        if (input.LeftCharacter != null){
             try {
                 Convert.ToInt32(input.character);
-                int returnInt = GetEntireNumberFromLeftNoSymbols(input.LeftThing) + Convert.ToInt32(input.character);
+                int returnInt = GetEntireNumberFromLeftNoSymbols(input.LeftCharacter) + Convert.ToInt32(input.character);
                 return returnInt;
             }
             catch {
@@ -50,11 +50,11 @@ public class OperationsHub : MonoBehaviour {
         }
     }
     public static string GetEntireNumberFromLeftToEquals(CharacterScript input) {
-        if (input.LeftThing.character == "=") {
+        if (input.LeftCharacter.character == "=") {
             return input.character;
         }
-        if (input.LeftThing != null) {
-            return GetEntireNumberFromLeftToEquals(input.LeftThing) + input.character;
+        if (input.LeftCharacter != null) {
+            return GetEntireNumberFromLeftToEquals(input.LeftCharacter) + input.character;
         }
         else {
             return input.character;

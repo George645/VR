@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterScript : MonoBehaviour{
+#nullable enable
     GameObject? followingDuplicate = null;
     GameObject? currentEquals = null;
+#nullable disable
 
     #region Public variables
-    public CharacterScript rightThing;
-    public CharacterScript leftThing;
+    public CharacterScript rightCharacter;
+    public CharacterScript leftCharacter;
     #endregion
 
     #region Static number variables
     public static List<GameObject> allTheNumberPrefabs;
     #endregion
 
-    private bool beenSelected = false;
     private GameObject parent = null;
 
     #region Serialized
@@ -36,18 +37,18 @@ public class CharacterScript : MonoBehaviour{
     #endregion
 
     #region get things
-    public CharacterScript RightThing { get { return rightThing; } }
-    public CharacterScript LeftThing { get { return leftThing; } }
+    public CharacterScript RightThing { get { return rightCharacter; } }
+    public CharacterScript LeftCharacter { get { return leftCharacter; } }
     #endregion
 
     private void Start() {
         try {
             if (name.Length > 1) {
-                character = System.Convert.ToString(System.Convert.ToInt16(name.Remove(1)));
+                character = Convert.ToString(Convert.ToInt16(name.Remove(1)));
                 isNumber = true;
             }
             else {
-                character = System.Convert.ToString(System.Convert.ToInt16(name));
+                character = Convert.ToString(Convert.ToInt16(name));
             }
         }
         catch {
@@ -67,6 +68,8 @@ public class CharacterScript : MonoBehaviour{
         }
     }
     private void Update() {
+
+        FaceCamera();
         if (followingDuplicate != null) {
             UpdateFolloweePosition();
         }
@@ -80,6 +83,14 @@ public class CharacterScript : MonoBehaviour{
         }
     }
 
+    #region Face camera
+
+    void FaceCamera(){
+        transform.rotation = Quaternion.FromToRotation(transform.position, Camera.main.transform.position);
+    }
+
+    #endregion
+
     #region move followee to this position
 
     private void UpdateFolloweePosition() {
@@ -90,7 +101,7 @@ public class CharacterScript : MonoBehaviour{
     #endregion
 
     #region selected
-
+    private bool beenSelected = false;
     public void Selected() {
         //work on this
         if (thisPrefab == null) { 
@@ -152,8 +163,8 @@ public class CharacterScript : MonoBehaviour{
 
     #region Destroy those on the right
     public void DestroyThoseOnTheRight() {
-        if (rightThing != null) {
-            rightThing.DestroyThoseOnTheRight();
+        if (rightCharacter != null) {
+            rightCharacter.DestroyThoseOnTheRight();
         }
         Destroy(this.gameObject);
     }
@@ -161,14 +172,14 @@ public class CharacterScript : MonoBehaviour{
 
     #region Realign the objects on the sides
     private void RealignCharacters() {
-        if (rightThing != null & leftThing != null) {
-            transform.position = (rightThing.transform.position + leftThing.transform.position) / 2;
+        if (rightCharacter != null & leftCharacter != null) {
+            transform.position = (rightCharacter.transform.position + leftCharacter.transform.position) / 2;
         }
-        else if (rightThing != null) {
-            transform.position = rightThing.transform.position + rightThing.gameObject.transform.right.normalized * 5;
+        else if (rightCharacter != null) {
+            transform.position = rightCharacter.transform.position + rightCharacter.gameObject.transform.right.normalized * 5;
         }
-        else if (leftThing != null) {
-            transform.position = leftThing.transform.position + leftThing.gameObject.transform.right.normalized * -5;
+        else if (leftCharacter != null) {
+            transform.position = leftCharacter.transform.position + leftCharacter.gameObject.transform.right.normalized * -5;
         }
     }
     #endregion
