@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class CharacterScript : MonoBehaviour{
@@ -18,6 +19,8 @@ public class CharacterScript : MonoBehaviour{
     #endregion
 
     private GameObject parent = null;
+    private LayerMask noCollision;
+    private LayerMask collision;
 
     #region Serialized
     [SerializeField]
@@ -37,11 +40,13 @@ public class CharacterScript : MonoBehaviour{
     #endregion
 
     #region get things
-    public CharacterScript RightThing { get { return rightCharacter; } }
+    public CharacterScript RightCharacter { get { return rightCharacter; } }
     public CharacterScript LeftCharacter { get { return leftCharacter; } }
     #endregion
 
     private void Start() {
+        noCollision = LayerMask.NameToLayer("No character collision");
+        collision = LayerMask.NameToLayer("character collision layer");
         try {
             if (name.Length > 1) {
                 character = Convert.ToString(Convert.ToInt16(name.Remove(1)));
@@ -63,15 +68,13 @@ public class CharacterScript : MonoBehaviour{
             Debug.Log(allTheNumberPrefabsLocal[0]); //THIS IS IMPORTANT -- IF IT IS REMOVED, THERE IS NO CHECK FOR IF THE LIST HAS ANYTHING IN
             allTheNumberPrefabs = allTheNumberPrefabsLocal;
         }
-        catch {
-
-        }
+        catch { }
     }
     private void Update() {
 
         FaceCamera();
         if (followingDuplicate != null) {
-            UpdateFolloweePosition();
+            UpdateFollowerPosition();
         }
         if (parent != null && isNumber) {
             CheckEqualsAvailiability();
@@ -86,14 +89,14 @@ public class CharacterScript : MonoBehaviour{
     #region Face camera
 
     void FaceCamera(){
-        transform.rotation = Quaternion.FromToRotation(transform.position, Camera.main.transform.position);
+        transform.rotation = Quaternion.LookRotation(transform.position - Camera.main.transform.position);
     }
 
     #endregion
 
-    #region move followee to this position
+    #region move follower to this position
 
-    private void UpdateFolloweePosition() {
+    private void UpdateFollowerPosition() {
         followingDuplicate.transform.position = transform.position;
         followingDuplicate.transform.rotation = transform.rotation;
     }
@@ -103,7 +106,35 @@ public class CharacterScript : MonoBehaviour{
     #region selected
     private bool beenSelected = false;
     public void Selected() {
-        //work on this
+        CreateFollowingDuplicate();
+        DetachFromParentCharacter();
+        DisableAllColliders(gameObject);
+    }
+
+    #region Disable colliders temporarily
+    void DisableAllColliders(GameObject parentObject) {
+        parentObject.transform.GetChild(0).gameObject.SetActive(false);
+        if (parentObject == gameObject) {
+            parentObject.transform.GetChild(1).GetComponent<MeshCollider>().enabled = false;
+        }
+        else {
+            Debug.Log("dutjfd");
+            parentObject.transform.GetChild(0).gameObject.layer = noCollision;
+        }
+    }
+    #endregion
+
+    #region Detach child from parent
+    void DetachFromParentCharacter(){
+        if (parent != null) {
+            parent.GetComponent<CharacterScript>().followingDuplicate = null;
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+    }
+    #endregion
+
+    #region Create a duplicate that follows this object
+    void CreateFollowingDuplicate(){
         if (thisPrefab == null) { 
             foreach (GameObject number in allTheNumberPrefabs) {
                 if (number.name[0] == name[0]) {
@@ -113,30 +144,63 @@ public class CharacterScript : MonoBehaviour{
             }
         }
         followingDuplicate = Instantiate(thisPrefab, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0));
+        DisableAllColliders(followingDuplicate);
         followingDuplicate.GetComponent<CharacterScript>().parent = gameObject;
-        followingDuplicate.transform.localScale = new Vector3(1.05f, 1.05f, 1.05f);
-        if (parent != null) {
-            parent.GetComponent<CharacterScript>().followingDuplicate = null;
-            transform.localScale = new Vector3(1, 1, 1);
-        }
+        followingDuplicate.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
     }
+    #endregion
 
     #endregion
 
     #region deseleft
 
     public void DeSelect() {
-        if (!followingDuplicate.GetComponent<CharacterScript>().beenSelected) {
+        DestroyFollower();
+        DisconnectFromParent();
+        ReEnableColliders();
+        RealignPosition();
+        if (currentEquals != null) {
+            Destroy(currentEquals);
+        } //not sure what this if statement is for, TEST IT LATER
+    }
+
+    #region destroy follower should it not be selected and moved
+    void DestroyFollower(){
+        if (followingDuplicate != null && !followingDuplicate.GetComponent<CharacterScript>().beenSelected) {
             Destroy(followingDuplicate);
         }
+    }
+    #endregion
+
+    #region Disconnect from parent
+    void DisconnectFromParent(){
         if (parent != null) {
             parent = null;
         }
-        if (currentEquals != null) {
-            Destroy(currentEquals);
-        }
         followingDuplicate = null;
     }
+    #endregion
+
+    #region ReEnable colliders
+    
+    void ReEnableColliders(){
+        transform.GetChild(1).GetComponent<MeshCollider>().enabled = true;
+        transform.GetChild(0).gameObject.SetActive(true);
+        transform.GetChild(0).gameObject.layer = collision;
+    }
+
+    #endregion
+
+    #region realign position
+
+    void RealignPosition() {
+        Vector3 normalizedXZ = new Vector2(transform.position.x, transform.position.z);
+        normalizedXZ = normalizedXZ.normalized * 10;
+        Debug.Log(transform.position.x + ", " + normalizedXZ.x + ", " + transform.position.z + ", " + normalizedXZ.y);
+        transform.position = new Vector3(normalizedXZ.x, Math.Clamp(transform.position.y, -20f, 20f), normalizedXZ.y);
+
+    }
+    #endregion
 
     #endregion
 
@@ -172,14 +236,15 @@ public class CharacterScript : MonoBehaviour{
 
     #region Realign the objects on the sides
     private void RealignCharacters() {
+        double circumpherenceOfTheCircle = 20 * math.PI;
         if (rightCharacter != null & leftCharacter != null) {
             transform.position = (rightCharacter.transform.position + leftCharacter.transform.position) / 2;
         }
         else if (rightCharacter != null) {
-            transform.position = rightCharacter.transform.position + rightCharacter.gameObject.transform.right.normalized * 5;
+            transform.position = new Vector3(rightCharacter.transform.position.x * (float)Math.Cos(28.6479f) - rightCharacter.transform.position.z * (float)Math.Sin(28.6479f), transform.position.y, rightCharacter.transform.position.x * (float)Math.Sin(28.6479f) + rightCharacter.transform.position.z * (float)Math.Cos(28.6479f));
         }
         else if (leftCharacter != null) {
-            transform.position = leftCharacter.transform.position + leftCharacter.gameObject.transform.right.normalized * -5;
+            transform.position = new Vector3(leftCharacter.transform.position.x * (float)-Math.Cos(28.6479f) - leftCharacter.transform.position.z * (float)-Math.Sin(28.6479f), transform.position.y, leftCharacter.transform.position.x * (float)-Math.Sin(28.6479f) + leftCharacter.transform.position.z * (float)-Math.Cos(28.6479f));
         }
     }
     #endregion

@@ -45,12 +45,12 @@ public class EqualsScript : MonoBehaviour{
         }
     }
     void CalculateCalculations() {
-        if (GetComponent<CharacterScript>().LeftThing != null) {
-            leftStringResult = OperationsHub.GetEntireNumberFromLeftToEquals(ThisCharacterScript.LeftThing);
+        if (GetComponent<CharacterScript>().leftCharacter != null) {
+            leftStringResult = OperationsHub.GetEntireNumberFromLeftToEquals(ThisCharacterScript.leftCharacter);
             leftIntResult = CalculateResultingNumber(leftStringResult);
         }
-        if (GetComponent<CharacterScript>().RightThing != null) {
-            rightStringResult = OperationsHub.GetEntireNumberFromRightToEquals(ThisCharacterScript.RightThing);
+        if (GetComponent<CharacterScript>().rightCharacter != null) {
+            rightStringResult = OperationsHub.GetEntireNumberFromRightToEquals(ThisCharacterScript.rightCharacter);
             rightIntResult = CalculateResultingNumber(rightStringResult);
         }
         if (leftIntResult == rightIntResult && leftIntResult != null && rightIntResult != null) {

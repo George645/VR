@@ -61,10 +61,10 @@ public class OperationsHub : MonoBehaviour {
         }
     }
     public static int GetEntireNumberFromRightNoSymbols(CharacterScript input) {
-        if (input.RightThing != null) {
+        if (input.rightCharacter != null) {
             try {
                 Convert.ToInt32(input.character);
-                int returnInt = GetEntireNumberFromRightNoSymbols(input.RightThing) + Convert.ToInt32(input.character);
+                int returnInt = GetEntireNumberFromRightNoSymbols(input.rightCharacter) + Convert.ToInt32(input.character);
                 return returnInt;
             }
             catch {
@@ -76,8 +76,8 @@ public class OperationsHub : MonoBehaviour {
         }
     }
     public static string GetEntireNumberFromRightToEquals(CharacterScript input) {
-        if (input.RightThing != null) {
-            return GetEntireNumberFromRightToEquals(input.RightThing) + input.character;
+        if (input.rightCharacter != null) {
+            return GetEntireNumberFromRightToEquals(input.rightCharacter) + input.character;
         }
         else {
             return input.character;

@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3978962467053595870}
   - component: {fileID: 4386978444192218097}
   - component: {fileID: 3741829686310378553}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -177,7 +177,7 @@ MonoBehaviour:
   m_SmoothPosition: 0
   m_SmoothPositionAmount: 1.34
   m_TightenPosition: 0.068
-  m_TrackRotation: 1
+  m_TrackRotation: 0
   m_SmoothRotation: 1
   m_SmoothRotationAmount: 1.57
   m_TightenRotation: 0.077
@@ -222,8 +222,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91a267758ffa3c147a4ea38613275c42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rightThing: {fileID: 0}
-  leftThing: {fileID: 0}
+  rightCharacter: {fileID: 0}
+  leftCharacter: {fileID: 0}
   thisPrefab: {fileID: 0}
   allTheNumberPrefabsLocal: []
   isNumber: 1
@@ -239,7 +239,7 @@ GameObject:
   - component: {fileID: 6992485414320350028}
   - component: {fileID: 4203875374619195326}
   - component: {fileID: 7199603115577495441}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -340,6 +340,10 @@ PrefabInstance:
     - target: {fileID: 4402452604576506583, guid: 67fecccd04f7fea4fa513fd2a55635d3, type: 3}
       propertyPath: m_Name
       value: Checking zones
+      objectReference: {fileID: 0}
+    - target: {fileID: 4402452604576506583, guid: 67fecccd04f7fea4fa513fd2a55635d3, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7594864476124347908, guid: 67fecccd04f7fea4fa513fd2a55635d3, type: 3}
       propertyPath: m_LocalPosition.x
@@ -443,6 +447,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 54e8633ee43964c42b76f18c67edf859, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8164078558771037576, guid: 54e8633ee43964c42b76f18c67edf859, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -464,6 +476,14 @@ PrefabInstance:
     - target: {fileID: 3774509235512974894, guid: 6b12f432fa58c224baf0d659706362be, type: 3}
       propertyPath: m_Name
       value: Highlight Interaction Affordance
+      objectReference: {fileID: 0}
+    - target: {fileID: 3774509235512974894, guid: 6b12f432fa58c224baf0d659706362be, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4896237787779704601, guid: 6b12f432fa58c224baf0d659706362be, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5258331117553129771, guid: 6b12f432fa58c224baf0d659706362be, type: 3}
       propertyPath: m_RootOrder
