@@ -241,10 +241,10 @@ public class CharacterScript : MonoBehaviour{
             transform.position = (rightCharacter.transform.position + leftCharacter.transform.position) / 2;
         }
         else if (rightCharacter != null) {
-            transform.position = new Vector3(rightCharacter.transform.position.x * (float)Math.Cos(28.6479f) - rightCharacter.transform.position.z * (float)Math.Sin(28.6479f), transform.position.y, rightCharacter.transform.position.x * (float)Math.Sin(28.6479f) + rightCharacter.transform.position.z * (float)Math.Cos(28.6479f));
+            transform.position = rightCharacter.transform.position + rightCharacter.gameObject.transform.right.normalized * 5;
         }
         else if (leftCharacter != null) {
-            transform.position = new Vector3(leftCharacter.transform.position.x * (float)-Math.Cos(28.6479f) - leftCharacter.transform.position.z * (float)-Math.Sin(28.6479f), transform.position.y, leftCharacter.transform.position.x * (float)-Math.Sin(28.6479f) + leftCharacter.transform.position.z * (float)-Math.Cos(28.6479f));
+            transform.position = leftCharacter.transform.position + leftCharacter.gameObject.transform.right.normalized * -5;
         }
     }
     #endregion
