@@ -4,15 +4,15 @@ public class CheckingZonesForother : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other) {
         if (other.transform.parent != transform.parent) {
-            Debug.Log(other.transform.parent.transform.position.z);
-            Debug.Log(transform.position.z);
-            if (other.transform.parent.transform.position.z > transform.position.z) {
+            Vector3 otherRelativePosition = transform.InverseTransformDirection(other.transform.position);
+            if (otherRelativePosition.x > 0) {
                 if (transform.parent.GetComponent<CharacterScript>().rightCharacter == null) {
                     transform.parent.GetComponent<CharacterScript>().rightCharacter = other.transform.parent.GetComponent<CharacterScript>();
                 }
             }
             else {
                 if (transform.parent.GetComponent<CharacterScript>().leftCharacter == null) {
+                    Debug.Log(other.transform);
                     transform.parent.GetComponent<CharacterScript>().leftCharacter = other.transform.parent.GetComponent<CharacterScript>();
                 }
             }

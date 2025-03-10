@@ -20,6 +20,7 @@ public class CharacterScript : MonoBehaviour{
 
     private GameObject parent = null;
     private LayerMask noCollision;
+    private LayerMask water;
     private LayerMask collision;
 
     #region Serialized
@@ -45,8 +46,9 @@ public class CharacterScript : MonoBehaviour{
     #endregion
 
     private void Start() {
-        noCollision = LayerMask.NameToLayer("No character collision");
-        collision = LayerMask.NameToLayer("character collision layer");
+        noCollision = 7;
+        collision = 6;
+        water = 4;
         try {
             if (name.Length > 1) {
                 character = Convert.ToString(Convert.ToInt16(name.Remove(1)));
@@ -65,7 +67,7 @@ public class CharacterScript : MonoBehaviour{
             isNumber = false;
         }
         try {
-            Debug.Log(allTheNumberPrefabsLocal[0]); //THIS IS IMPORTANT -- IF IT IS REMOVED, THERE IS NO CHECK FOR IF THE LIST HAS ANYTHING IN
+            Debug.Log(message: allTheNumberPrefabsLocal[0]); //THIS IS IMPORTANT -- IF IT IS REMOVED, THERE IS NO CHECK FOR IF THE LIST HAS ANYTHING IN
             allTheNumberPrefabs = allTheNumberPrefabsLocal;
         }
         catch { }
@@ -113,14 +115,15 @@ public class CharacterScript : MonoBehaviour{
 
     #region Disable colliders temporarily
     void DisableAllColliders(GameObject parentObject) {
-        parentObject.transform.GetChild(0).gameObject.SetActive(false);
-        if (parentObject == gameObject) {
-            parentObject.transform.GetChild(1).GetComponent<MeshCollider>().enabled = false;
+        if (parentObject = gameObject) {
+            parentObject.transform.GetChild(1).gameObject.layer = noCollision;
         }
         else {
-            Debug.Log("dutjfd");
-            parentObject.transform.GetChild(0).gameObject.layer = noCollision;
+            parentObject.transform.GetChild(1).GetComponent<MeshCollider>().enabled = false;
+            parentObject.transform.GetChild(1).gameObject.layer = water;
         }
+        parentObject.transform.GetChild(0).gameObject.SetActive(false);
+        parentObject.transform.GetChild(0).gameObject.layer = noCollision;
     }
     #endregion
 
@@ -186,6 +189,7 @@ public class CharacterScript : MonoBehaviour{
     void ReEnableColliders(){
         transform.GetChild(1).GetComponent<MeshCollider>().enabled = true;
         transform.GetChild(0).gameObject.SetActive(true);
+        transform.GetChild(1).gameObject.layer = collision;
         transform.GetChild(0).gameObject.layer = collision;
     }
 
@@ -196,7 +200,6 @@ public class CharacterScript : MonoBehaviour{
     void RealignPosition() {
         Vector3 normalizedXZ = new Vector2(transform.position.x, transform.position.z);
         normalizedXZ = normalizedXZ.normalized * 10;
-        Debug.Log(transform.position.x + ", " + normalizedXZ.x + ", " + transform.position.z + ", " + normalizedXZ.y);
         transform.position = new Vector3(normalizedXZ.x, Math.Clamp(transform.position.y, -20f, 20f), normalizedXZ.y);
 
     }
@@ -234,17 +237,38 @@ public class CharacterScript : MonoBehaviour{
     }
     #endregion
 
+
     #region Realign the objects on the sides
+
+    [Header("This is the angle for the difference in position between this and other characters")]
+    [SerializeField]
+    double degreeAngle = 5;
     private void RealignCharacters() {
-        double circumpherenceOfTheCircle = 20 * math.PI;
+        double angle = degreeAngle * 2 * math.PI / 360;
         if (rightCharacter != null & leftCharacter != null) {
-            transform.position = (rightCharacter.transform.position + leftCharacter.transform.position) / 2;
+
+            double rightAngle = Math.Atan(rightCharacter.transform.position.z / rightCharacter.transform.position.x);
+            if (rightCharacter.transform.position.z < 0) {
+                rightAngle += 180;
+            }
+
+            double leftAngle = Math.Atan(leftCharacter.transform.position.z / LeftCharacter.transform.position.x);
+            if (leftCharacter.transform.position.z < 0) {
+                leftAngle += 180;
+            }
+
+            if (leftAngle > 200 && rightAngle < 200) {
+                rightAngle += 360;
+            }
+            double midAngle = (rightAngle + leftAngle) / 2 + leftAngle;
+
+            transform.position = new Vector3((float)(10 * Math.Cos(midAngle)), (rightCharacter.transform.position.y + LeftCharacter.transform.position.y) / 2, (float)(10 * Math.Sin(midAngle)));
         }
         else if (rightCharacter != null) {
-            transform.position = rightCharacter.transform.position + rightCharacter.gameObject.transform.right.normalized * 5;
+            transform.position = new Vector3(rightCharacter.transform.position.x * (float)Math.Cos(angle) - rightCharacter.transform.position.z * (float)Math.Sin(angle), rightCharacter.transform.position.y, rightCharacter.transform.position.x * (float)Math.Sin(angle) + rightCharacter.transform.position.z * (float)Math.Cos(angle));
         }
         else if (leftCharacter != null) {
-            transform.position = leftCharacter.transform.position + leftCharacter.gameObject.transform.right.normalized * -5;
+            transform.position = new Vector3(leftCharacter.transform.position.x * (float)Math.Cos(-angle) - leftCharacter.transform.position.z * (float)Math.Sin(-angle), leftCharacter.transform.position.y, leftCharacter.transform.position.x * (float)Math.Sin(-angle) + leftCharacter.transform.position.z * (float)Math.Cos(-angle));
         }
     }
     #endregion
