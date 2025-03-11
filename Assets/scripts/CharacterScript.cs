@@ -285,8 +285,20 @@ public class CharacterScript_editor : Editor{
 
         GUIContent content = new GUIContent("Is the character a number: ", "Not entirely necessary to fill in, or at least, shouldn't be");
 
-        Script.isNumber = EditorGUILayout.Toggle(content, Script.isNumber);
-        
+        EditorGUILayout.Space();
 
+        Script.isNumber = EditorGUILayout.Toggle(content, Script.isNumber);
+
+        if (Script.isNumber) {
+            try {
+                content = new GUIContent("The number that the GameObject is: ", "Not neccessary to fill in, will be useful for debugging later");
+                Script.character = Convert.ToString(EditorGUILayout.Slider(content, Convert.ToInt16(Script.character), 0, 9));
+            }
+            catch { }
+        }
+        else { 
+            content = new GUIContent("The symbol that the GameObject is: ", "Not neccessary to fill in, will be useful for debugging later");
+            Script.character = EditorGUILayout.TextField(content, Script.character);
+        }
     }
 }
