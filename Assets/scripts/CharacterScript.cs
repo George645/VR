@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Unity.Mathematics;
+using UnityEditor;
 using UnityEngine;
 
 public class CharacterScript : MonoBehaviour{
@@ -32,10 +33,10 @@ public class CharacterScript : MonoBehaviour{
     public List<GameObject> allTheNumberPrefabsLocal;
 
     [Tooltip("Not entirely necessary to fill in, or at least, shouldn't be")]
-    [SerializeField]
+    [HideInInspector]
     public bool isNumber = true;
     [Tooltip("Not entirely necessary to fill in, or at least, shouldn't be")]
-    [SerializeField]
+    [HideInInspector]
     public string character;
 
     #endregion
@@ -273,4 +274,19 @@ public class CharacterScript : MonoBehaviour{
     }
     #endregion
 
+}
+[CustomEditor(typeof(CharacterScript))]
+public class CharacterScript_editor : Editor{
+    public override void OnInspectorGUI(){
+
+        CharacterScript Script = (CharacterScript)target;
+
+        DrawDefaultInspector();
+
+        GUIContent content = new GUIContent("Is the character a number: ", "Not entirely necessary to fill in, or at least, shouldn't be");
+
+        Script.isNumber = EditorGUILayout.Toggle(content, Script.isNumber);
+        
+
+    }
 }
