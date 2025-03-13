@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3978962467053595870}
   - component: {fileID: 4386978444192218097}
   - component: {fileID: -2886715028575576677}
-  - component: {fileID: 2892960029688331681}
   m_Layer: 6
   m_Name: 9
   m_TagString: Untagged
@@ -223,6 +222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91a267758ffa3c147a4ea38613275c42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  followingDuplicate: {fileID: 0}
   rightCharacter: {fileID: 0}
   leftCharacter: {fileID: 0}
   thisPrefab: {fileID: 0}
@@ -230,27 +230,6 @@ MonoBehaviour:
   isNumber: 1
   character: 
   degreeAngle: 5
---- !u!65 &2892960029688331681
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2280630817503555721}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 0.8, y: 1.2, z: 0.2}
-  m_Center: {x: 0, y: 0.5, z: 0}
 --- !u!1 &3241166280651659090
 GameObject:
   m_ObjectHideFlags: 0

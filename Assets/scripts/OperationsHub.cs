@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.Analytics;
-using UnityEditor.ShaderGraph.Legacy;
 
 public class OperationsHub : MonoBehaviour {
     public static GameObject number0;
@@ -34,11 +33,12 @@ public class OperationsHub : MonoBehaviour {
        int secondInt = GetEntireNumber(input2);
        return firstInt + secondInt;
    }*/
+    
     public static int GetEntireNumberFromLeftNoSymbols(CharacterScript input) {
-        if (input.LeftCharacter != null){
+        if (input.leftCharacter != null){
             try {
                 Convert.ToInt32(input.character);
-                int returnInt = GetEntireNumberFromLeftNoSymbols(input.LeftCharacter) + Convert.ToInt32(input.character);
+                int returnInt = GetEntireNumberFromLeftNoSymbols(input.leftCharacter) + Convert.ToInt32(input.character);
                 return returnInt;
             }
             catch {
@@ -50,11 +50,11 @@ public class OperationsHub : MonoBehaviour {
         }
     }
     public static string GetEntireNumberFromLeftToEquals(CharacterScript input) {
-        if (input.LeftCharacter.character == "=") {
+        if (input.leftCharacter.character == "=") {
             return input.character;
         }
-        if (input.LeftCharacter != null) {
-            return GetEntireNumberFromLeftToEquals(input.LeftCharacter) + input.character;
+        if (input.leftCharacter != null) {
+            return GetEntireNumberFromLeftToEquals(input.leftCharacter) + input.character;
         }
         else {
             return input.character;

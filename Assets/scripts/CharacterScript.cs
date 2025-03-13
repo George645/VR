@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class CharacterScript : MonoBehaviour{
 #nullable enable
-    GameObject? followingDuplicate = null;
+    public GameObject? followingDuplicate = null;
     GameObject? currentEquals = null;
 #nullable disable
 
@@ -16,7 +16,7 @@ public class CharacterScript : MonoBehaviour{
     #endregion
 
     #region Static number variables
-    public static List<GameObject> allTheNumberPrefabs;
+    public static List<GameObject> allTheCharacterPrefabs;
     #endregion
 
     private GameObject parent = null;
@@ -41,46 +41,46 @@ public class CharacterScript : MonoBehaviour{
 
     #endregion
 
-    #region get things
-    public CharacterScript RightCharacter { get { return rightCharacter; } }
-    public CharacterScript LeftCharacter { get { return leftCharacter; } }
-    #endregion
-
     private void Start() {
         noCollision = 7;
         collision = 6;
         water = 4;
-        try {
-            if (name.Length > 1) {
+        if (name.Length > 1) {
+            try {
                 character = Convert.ToString(Convert.ToInt16(name.Remove(1)));
-                isNumber = true;
             }
-            else {
+            catch {
+                character = name.Remove(1);
+            }
+        }
+        else {
+            try {
                 character = Convert.ToString(Convert.ToInt16(name));
             }
+            catch {
+                character = name;
+            }
         }
-        catch {
-            character = name.Remove(1);
-            isNumber = false;
-        }
-        finally {
-            character = name;
-            isNumber = false;
-        }
+        
         try {
             Debug.Log(message: allTheNumberPrefabsLocal[0]); //THIS IS IMPORTANT -- IF IT IS REMOVED, THERE IS NO CHECK FOR IF THE LIST HAS ANYTHING IN
-            allTheNumberPrefabs = allTheNumberPrefabsLocal;
+            allTheCharacterPrefabs = allTheNumberPrefabsLocal;
         }
         catch { }
     }
     private void Update() {
-
         FaceCamera();
         if (followingDuplicate != null) {
             UpdateFollowerPosition();
         }
-        if (parent != null && isNumber) {
+        if (parent != null && isNumber && parent.GetComponent<CharacterScript>().followingDuplicate == null) {
             CheckEqualsAvailiability();
+        }
+        else {
+            try {
+                currentEquals = null;
+            }
+            catch { }
         }
     }
     private void LateUpdate() {
@@ -109,9 +109,9 @@ public class CharacterScript : MonoBehaviour{
     #region selected
     private bool beenSelected = false;
     public void Selected() {
-        AudioManager.audioManager.Play("Character selecta");
-        DisableAllColliders(gameObject);
+        AudioManager.audioManager.Play("Character select");
         CreateFollowingDuplicate();
+        DisableAllColliders(gameObject);
         DetachFromParentCharacter();
     }
 
@@ -119,11 +119,17 @@ public class CharacterScript : MonoBehaviour{
     void DisableAllColliders(GameObject parentObject) {
 
         if (rightCharacter != null) {
-            parentObject.GetComponent<CharacterScript>().rightCharacter.leftCharacter = null;
+            try {
+                parentObject.GetComponent<CharacterScript>().rightCharacter.leftCharacter = null;
+            }
+            catch { }
             parentObject.GetComponent<CharacterScript>().rightCharacter = null;
         }
         if (leftCharacter != null) {
-            parentObject.GetComponent<CharacterScript>().leftCharacter.rightCharacter = null;
+            try {
+                parentObject.GetComponent<CharacterScript>().leftCharacter.rightCharacter = null;
+            }
+            catch { }
             parentObject.GetComponent<CharacterScript>().leftCharacter = null;
         }
 
@@ -150,7 +156,7 @@ public class CharacterScript : MonoBehaviour{
     #region Create a duplicate that follows this object
     void CreateFollowingDuplicate(){
         if (thisPrefab == null) { 
-            foreach (GameObject number in allTheNumberPrefabs) {
+            foreach (GameObject number in allTheCharacterPrefabs) {
                 if (number.name[0] == name[0]) {
                     thisPrefab = number;
                     break;
@@ -167,7 +173,7 @@ public class CharacterScript : MonoBehaviour{
 
     #region deseleft
 
-    public void DeSelect() {
+    public void DeSelect() { 
         DestroyFollower();
         DisconnectFromParent();
         ReEnableColliders();
@@ -187,6 +193,7 @@ public class CharacterScript : MonoBehaviour{
 
     #region Disconnect from parent
     void DisconnectFromParent(){
+        currentEquals = null;
         if (parent != null) {
             parent = null;
         }
@@ -219,9 +226,9 @@ public class CharacterScript : MonoBehaviour{
 
     #region Creating equals between numbers
     private void CheckEqualsAvailiability() {
-        if (Math.Abs(parent.transform.position.z - transform.position.z) < 20 && Math.Abs(parent.transform.position.x - transform.position.x) < 5 && Math.Abs(parent.transform.position.y - transform.position.y) < 10) {
+        if (1 < Math.Abs(transform.InverseTransformPoint(parent.transform.position).x) && Math.Abs(transform.InverseTransformPoint(parent.transform.position).x) < 3 && Math.Abs(transform.InverseTransformPoint(parent.transform.position).z) < 1 && Math.Abs(transform.InverseTransformPoint(parent.transform.position).y) < 1) {
             if (currentEquals == null) {
-                foreach (GameObject number in allTheNumberPrefabs) {
+                foreach (GameObject number in allTheCharacterPrefabs) {
                     if (number.name[0] == '=') {
                         currentEquals = Instantiate(number, (transform.position + parent.transform.position) / 2, Quaternion.Lerp(transform.rotation, parent.transform.rotation, 0.5f));
                     }
@@ -255,36 +262,14 @@ public class CharacterScript : MonoBehaviour{
     double degreeAngle = 5;
     private void RealignCharacters() {
         double angle = degreeAngle * 2 * math.PI / 360;
-        if (rightCharacter != null & leftCharacter != null) {
-
-            double rightAngle = Math.Atan(rightCharacter.transform.position.z / rightCharacter.transform.position.x);
-            if (rightCharacter.transform.position.z < 0) {
-                rightAngle += 180;
-            }
-
-            double leftAngle = Math.Atan(leftCharacter.transform.position.z / LeftCharacter.transform.position.x);
-            if (leftCharacter.transform.position.z < 0) {
-                leftAngle += 180;
-            }
-
-            if (leftAngle > 200 && rightAngle < 200) {
-                rightAngle += 360;
-            }
-            double midAngle = (rightAngle + leftAngle) / 2 + leftAngle;
-
-            transform.position = new Vector3((float)(10 * Math.Cos(midAngle)), (rightCharacter.transform.position.y + LeftCharacter.transform.position.y) / 2, (float)(10 * Math.Sin(midAngle)));
-        }
-        else if (rightCharacter != null) {
-            transform.position = new Vector3(rightCharacter.transform.position.x * (float)Math.Cos(angle) - rightCharacter.transform.position.z * (float)Math.Sin(angle), rightCharacter.transform.position.y, rightCharacter.transform.position.x * (float)Math.Sin(angle) + rightCharacter.transform.position.z * (float)Math.Cos(angle));
-        }
-        else if (leftCharacter != null) {
+        if (leftCharacter != null) {
             transform.position = new Vector3(leftCharacter.transform.position.x * (float)Math.Cos(-angle) - leftCharacter.transform.position.z * (float)Math.Sin(-angle), leftCharacter.transform.position.y, leftCharacter.transform.position.x * (float)Math.Sin(-angle) + leftCharacter.transform.position.z * (float)Math.Cos(-angle));
         }
     }
     #endregion
 
 }
-[CustomEditor(typeof(CharacterScript))]
+/*CustomEditor(typeof(CharacterScript))]
 public class CharacterScript_editor : Editor{
     public override void OnInspectorGUI(){
 
@@ -311,3 +296,4 @@ public class CharacterScript_editor : Editor{
         }
     }
 }
+*/
