@@ -109,22 +109,32 @@ public class CharacterScript : MonoBehaviour{
     #region selected
     private bool beenSelected = false;
     public void Selected() {
+        AudioManager.audioManager.Play("Character selecta");
+        DisableAllColliders(gameObject);
         CreateFollowingDuplicate();
         DetachFromParentCharacter();
-        DisableAllColliders(gameObject);
     }
 
     #region Disable colliders temporarily
     void DisableAllColliders(GameObject parentObject) {
-        if (parentObject = gameObject) {
+
+        if (rightCharacter != null) {
+            parentObject.GetComponent<CharacterScript>().rightCharacter.leftCharacter = null;
+            parentObject.GetComponent<CharacterScript>().rightCharacter = null;
+        }
+        if (leftCharacter != null) {
+            parentObject.GetComponent<CharacterScript>().leftCharacter.rightCharacter = null;
+            parentObject.GetComponent<CharacterScript>().leftCharacter = null;
+        }
+
+        parentObject.transform.GetChild(0).gameObject.layer = noCollision;
+        if (parentObject == gameObject) {
             parentObject.transform.GetChild(1).gameObject.layer = noCollision;
+            parentObject.transform.GetChild(1).GetComponent<MeshCollider>().enabled = false;
         }
         else {
-            parentObject.transform.GetChild(1).GetComponent<MeshCollider>().enabled = false;
             parentObject.transform.GetChild(1).gameObject.layer = water;
         }
-        parentObject.transform.GetChild(0).gameObject.SetActive(false);
-        parentObject.transform.GetChild(0).gameObject.layer = noCollision;
     }
     #endregion
 
@@ -150,7 +160,6 @@ public class CharacterScript : MonoBehaviour{
         followingDuplicate = Instantiate(thisPrefab, new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 0));
         DisableAllColliders(followingDuplicate);
         followingDuplicate.GetComponent<CharacterScript>().parent = gameObject;
-        followingDuplicate.transform.localScale = new Vector3(1.1f, 1.1f, 1.1f);
     }
     #endregion
 

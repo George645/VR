@@ -229,6 +229,7 @@ MonoBehaviour:
   allTheNumberPrefabsLocal: []
   isNumber: 1
   character: 
+  degreeAngle: 5
 --- !u!65 &2892960029688331681
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -342,7 +343,7 @@ MeshCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
